@@ -2,13 +2,18 @@ package com.activiti.system.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.activiti.system.mapper.LeaveapplyMapper;
 import com.activiti.system.domain.Leaveapply;
@@ -61,7 +66,13 @@ public class LeaveapplyServiceImpl implements ILeaveapplyService {
      */
     @Override
     public List<Leaveapply> selectLeaveapplyList(Leaveapply leaveapply) {
-        return leaveapplyMapper.selectLeaveapplyList(leaveapply);
+        LambdaQueryWrapper<Leaveapply> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper
+            .eq(StringUtils.isNotEmpty(leaveapply.getUserId()), Leaveapply::getUserId, leaveapply.getUserId())
+            .eq(StringUtils.isNotEmpty(leaveapply.getLeaveType()), Leaveapply::getLeaveType, leaveapply.getLeaveType())
+            .ge(MapUtils.isNotEmpty(leaveapply.getParams()) && Objects.nonNull(leaveapply.getParams().get("beginApplyTime")), Leaveapply::getApplyTime, leaveapply.getParams().get("beginApplyTime"))
+            .le(MapUtils.isNotEmpty(leaveapply.getParams()) && Objects.nonNull(leaveapply.getParams().get("endApplyTime")), Leaveapply::getApplyTime, leaveapply.getParams().get("endApplyTime"));
+        return leaveapplyMapper.selectList(queryWrapper);
     }
 
     /**

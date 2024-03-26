@@ -2,6 +2,7 @@ package com.activiti.system.mapper;
 
 import java.util.List;
 import com.activiti.system.domain.Leaveapply;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * 请假Mapper接口
@@ -9,8 +10,7 @@ import com.activiti.system.domain.Leaveapply;
  * @author shenzhanwang
  * @date 2022-04-02
  */
-public interface LeaveapplyMapper 
-{
+public interface LeaveapplyMapper extends BaseMapper<Leaveapply> {
     /**
      * 查询请假
      * 
