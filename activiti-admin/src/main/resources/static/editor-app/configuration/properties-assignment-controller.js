@@ -20,71 +20,77 @@
 /*
  * Assignment
  */
-var KisBpmAssignmentCtrl = [ '$scope', '$modal', function($scope, $modal) {
-
+var loginName = [];
+var roleName= [];
+var KisBpmAssignmentCtrl = [ '$scope', '$modal','$http', function($scope, $modal, $http) {
+	console.log("KisBpmAssignmentCtrl运行")
     // Config for the modal window
     var opts = {
         template:  'editor-app/configuration/properties/assignment-popup.html?version=' + Date.now(),
         scope: $scope
     };
-
-    // Open the dialog
     $modal(opts);
+
 }];
 
 var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
-
+	console.log("KisBpmAssignmentPopupCtrl运行")
 	// 新增代码块
-	var loginName = [];
-	var roleName= [];
+	// var loginName = [];
+	// var roleName= [];
 	jQuery.ajax({
-	    url: "/system/user/queryAll",
-	    type: "Get",
-	    success: function(data) {
-	        // data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再序列化
-	        console.log("queryAll成功")
-	        console.log(data)
-	        for (let i = 0; i < data.length; i++) {
-	            loginName.push(data[i].loginName);
-	        }
-	        // select1();
-	        // select2();
-	        console.log(loginName);
+		url: "/system/user/queryAll",
+		type: "Get",
+		success: function(data) {
+			// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再序列化
+			console.log("queryAll成功")
+			console.log(data)
+			loginName = []
+			for (let i = 0; i < data.length; i++) {
+				loginName.push(data[i].loginName);
+			}
+			// select1();
+			// select2();
+			console.log(loginName);
 			$scope.assignment.assignee = loginName[0];
 			$scope.assignment.loginName1 = loginName;
 			$scope.$apply();
-	    }
+		}
 	});
 	jQuery.ajax({
-	    url: "/system/role/list/all",
-	    type: "Get",
-	    success: function(data) {
-	        // data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再序列化
-	        console.log("all成功")
-	        console.log(data)
-	        for (let i = 0; i < data.length; i++) {
-	            roleName.push(data[i].roleName);
-	        }
-	        console.log(roleName);
-	        // select3();
-			// $scope.assignment.assignee1 = roleName[0];
+		url: "/system/role/list/all",
+		type: "Get",
+		success: function(data) {
+			// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再序列化
+			console.log("all成功")
+			console.log(data)
+			roleName = []
+			for (let i = 0; i < data.length; i++) {
+				roleName.push(data[i].roleName);
+			}
+			console.log(roleName);
+			// select3();
 			$scope.assignment.roleName1 = roleName;
 			$scope.$apply();
-	    }
+
+		}
 	});
 
 	// $scope.assignment.loginName = loginName;
 	// $scope.assignment.roleName = roleName;
-
+	// $scope.assignment.assignee = loginName[0];
+	// $scope.assignment.loginName1 = loginName;
 	console.log("$scope：",$scope)
+	console.log("$scope.property：",$scope.property)
 
 
 
     // Put json representing assignment on scope
     if ($scope.property.value !== undefined && $scope.property.value !== null
         && $scope.property.value.assignment !== undefined
-        && $scope.property.value.assignment !== null) 
+        && $scope.property.value.assignment !== null)
     {
+		console.log("执行了")
         $scope.assignment = $scope.property.value.assignment;
     } else {
         $scope.assignment = {};
@@ -94,7 +100,7 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
     {
     	$scope.assignment.candidateUsers = [{value: ''}];
     }
-    
+
     // Click handler for + button after enum value
     var userValueIndex = 1;
     $scope.addCandidateUserValue = function(index) {
@@ -105,24 +111,25 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
     $scope.removeCandidateUserValue = function(index) {
         $scope.assignment.candidateUsers.splice(index, 1);
     };
-    
+
     if ($scope.assignment.candidateGroups == undefined || $scope.assignment.candidateGroups.length == 0)
     {
     	$scope.assignment.candidateGroups = [{value: ''}];
     }
-    
+
     var groupValueIndex = 1;
     $scope.addCandidateGroupValue = function(index) {
         $scope.assignment.candidateGroups.splice(index + 1, 0, {value: 'value ' + groupValueIndex++});
-    };
+	};
 
     // Click handler for - button after enum value
     $scope.removeCandidateGroupValue = function(index) {
         $scope.assignment.candidateGroups.splice(index, 1);
+
     };
 
     $scope.save = function() {
-		console.log(66666666666);
+		console.log("save确定");
         $scope.property.value = {};
         handleAssignmentInput($scope);
         $scope.property.value.assignment = $scope.assignment;
@@ -133,12 +140,25 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
 
     // Close button handler
     $scope.close = function() {
-		console.log(7777777777777);
+		console.log("close关闭");
     	handleAssignmentInput($scope);
     	$scope.property.mode = 'read';
     	$scope.$hide();
     };
-    
+
+	// 清空下拉框
+	$scope.cleanAss = function (){
+		$scope.assignment.assignee =  '';
+	}
+
+	$scope.cleanCandidateUser = function (index){
+		$scope.assignment.candidateUsers[index].value = '';
+	}
+
+	$scope.cleanCandidateGroup = function (index){
+		$scope.assignment.candidateGroups[index].value = '';
+	}
+
     var handleAssignmentInput = function($scope) {
     	if ($scope.assignment.candidateUsers)
     	{
@@ -155,18 +175,18 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
 	        		toRemoveIndexes[toRemoveIndexes.length] = i;
 	        	}
 	        }
-	        
+
 	        for (var i = 0; i < toRemoveIndexes.length; i++)
 	        {
 	        	$scope.assignment.candidateUsers.splice(toRemoveIndexes[i], 1);
 	        }
-	        
+
 	        if (emptyUsers)
 	        {
 	        	$scope.assignment.candidateUsers = undefined;
 	        }
     	}
-        
+
     	if ($scope.assignment.candidateGroups)
     	{
 	        var emptyGroups = true;
@@ -182,16 +202,17 @@ var KisBpmAssignmentPopupCtrl = [ '$scope', function($scope) {
 	        		toRemoveIndexes[toRemoveIndexes.length] = i;
 	        	}
 	        }
-	        
+
 	        for (var i = 0; i < toRemoveIndexes.length; i++)
 	        {
 	        	$scope.assignment.candidateGroups.splice(toRemoveIndexes[i], 1);
 	        }
-	        
+
 	        if (emptyGroups)
 	        {
 	        	$scope.assignment.candidateGroups = undefined;
 	        }
     	}
     };
+
 }];

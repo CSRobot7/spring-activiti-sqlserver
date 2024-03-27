@@ -6,7 +6,7 @@ JDK1.8、SpringBoot2、MyBatis-plus、Activiti6、Activiti原生编辑器、SqlS
 
 #### 安装教程
 
-1. 新建sqlserver数据库spring-activiti，导入SQL脚本spring-activiti.sql，创建需要的表
+1. 新建sqlserver数据库spring-activiti，导入SQL脚本spring-activiti.sql，创建需要的表，activiti相关的表会在项目启动后自动创建
 2. 修改application-sqlserver.yml配置文件中数据库url和账密 
 3. 打开http://localhost 访问登录页面，目前有三个账号，其中admin是管理员：
 
@@ -22,7 +22,8 @@ JDK1.8、SpringBoot2、MyBatis-plus、Activiti6、Activiti原生编辑器、SqlS
 #### 使用说明
 
 
-1.  暂时只实现了申请单的完整审批流程
+1. 暂时只实现了申请单的完整审批流程，首先在“部署管理”页将“请假申请流程2”转为模型
+   ![本地图片](pic/部署管理.png "本地图片标题")
 2. 流程管理-模型管理对审批流模型进行管理，支持新增模型
    ![本地图片](pic/模型管理.png "本地图片标题")
 3. 点击设计对审批流程进行编辑

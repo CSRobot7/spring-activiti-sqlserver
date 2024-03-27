@@ -247,8 +247,8 @@ public class TaskController extends BaseController {
         return infos;
     }
 
-    @GetMapping(value = "/processDiagram")
-    public void genProcessDiagram(HttpServletResponse httpServletResponse, @RequestParam String taskid) throws IOException {
+    @GetMapping(value = "/processDiagram/{taskid}")
+    public void genProcessDiagram(HttpServletResponse httpServletResponse, @PathVariable String taskid) throws IOException {
         final Task task = taskService.createTaskQuery().taskId(taskid).singleResult();
         if (Objects.isNull(task)) {
             return;

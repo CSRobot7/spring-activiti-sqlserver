@@ -35,22 +35,26 @@
 <!--            		</div>-->
 <!--            	</div>-->
                 <div class="row row-no-gutter">
-                    <div class="form-group">
+                    <div class="form-group" style="position: relative">
                         <label for="assigneeField">{{'PROPERTY.ASSIGNMENT.ASSIGNEE' | translate}}</label>
+                        <span class="badge" ng-click="cleanAss($index)" style="position: absolute;bottom: 15%;right: 5%;z-index: 1;" aria-hidden="true">×</span>
+
 <!--                        <input type="text" id="assigneeField" class="form-control" ng-model="assignment.assignee" placeholder="{{'PROPERTY.ASSIGNMENT.ASSIGNEE_PLACEHOLDER' | translate}}" />-->
-                        <select id="assigneeField" class="form-control" ng-model="assignment.assignee"  ng-options="item for item in assignment.loginName1" >
+                        <select id="assigneeField" class="form-control" ng-model="assignment.assignee"  ng-options="item for item in assignment.loginName1" style="position: relative">
                             <option ng-value="item" >{{item}}</option>
                         </select>
+
                     </div>
                 </div>
 
                 <div class="row row-no-gutter">
-                    <div class="form-group">
+                    <div class="form-group" >
                     	<label for="userField">{{'PROPERTY.ASSIGNMENT.CANDIDATE_USERS' | translate}}</label>
-                        <div ng-repeat="candidateUser in assignment.candidateUsers">
+                        <div ng-repeat="candidateUser in assignment.candidateUsers" style="position: relative">
+                            <span class="badge" ng-click="cleanCandidateUser($index)" style="position: absolute;bottom: 50%;right: 5%;z-index: 1;"  aria-hidden="true">×</span>
 <!--            	            <input id="userField" class="form-control" type="text" ng-model="candidateUser.value" />-->
 <!--                            <select id="userField1" class="form-control"  ></select>-->
-                            <select id="userField" class="form-control" ng-model="candidateUser.value"  ng-options="item for item in assignment.loginName1" >
+                            <select id="userField" class="form-control" ng-model="candidateUser.value"  ng-options="item for item in assignment.loginName1" style="position: relative">
                                 <option ng-value="item" >{{item}}</option>
                             </select>
             	            <i class="glyphicon glyphicon-minus clickable-property" ng-click="removeCandidateUserValue($index)"></i>
@@ -60,10 +64,11 @@
 
                     <div class="form-group">
                     	<label for="groupField">{{'PROPERTY.ASSIGNMENT.CANDIDATE_GROUPS' | translate}}</label>
-                        <div ng-repeat="candidateGroup in assignment.candidateGroups">
+                        <div ng-repeat="candidateGroup in assignment.candidateGroups" style="position: relative">
+                            <span class="badge" ng-click="cleanCandidateGroup($index)" style="position: absolute;bottom: 50%;right: 5%;z-index: 1;" aria-hidden="true">×</span>
 <!--            	          	<input id="groupField" class="form-control" type="text" ng-model="candidateGroup.value" />-->
 <!--                            <select id="groupField1" class="form-control"  ></select>-->
-                            <select id="groupField" class="form-control" ng-model="candidateGroup.value"  ng-options="item for item in assignment.roleName1" >
+                            <select id="groupField" class="form-control" ng-model="candidateGroup.value"  ng-options="item for item in assignment.roleName1" style="position: relative">
                                 <option ng-value="item" >{{item}}</option>
                             </select>
             	          	<i class="glyphicon glyphicon-minus clickable-property" ng-click="removeCandidateGroupValue($index)"></i>

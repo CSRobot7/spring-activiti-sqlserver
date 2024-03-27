@@ -67,6 +67,10 @@
                 <button class="btn btn-warning" onclick="rebut()" type="button"><i class="fa fa-reply"></i>&nbsp;驳回</button>
             </div>
         </div>
+        <div class="process-diagram-frame">
+            <img id="processDiagramImage" alt="Process Diagram"/>
+<!--            <h3>流程图</h3>-->
+        </div>
     </form>
 </div>
 </div>
@@ -74,14 +78,50 @@
     <div id="vertical-timeline" class="vertical-container dark-timeline">
     </div>
 </div>
+
+<style>
+    .process-diagram-frame {
+        border: 2px solid #ddd; /* 设置边框颜色和宽度 */
+        padding: 15px; /* 设置内边距 */
+        margin-top: 20px; /* 在方框上方添加一些边距 */
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* 可选：添加一个轻微的阴影效果 */
+        background-color: #f9f9f9; /* 设置方框背景颜色 */
+        border-radius: 5px; /* 可选：轻微圆角边框 */
+    }
+
+</style>
+
 </body>
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: datetimepicker-js" />
 <script th:inline="javascript">
+
+    window.onload = function() {
+        fetchProcessDiagram(); // 加载流程图
+    };
+
     var prefix = ctx + "task/manage"
     $("#form-leaveapply-add").validate({
         focusCleanup: true
     });
+
+    function fetchProcessDiagram() {
+        // 假设 taskid 已经通过某种方式获取并保持在页面上
+        var taskid = $("#taskid").val();
+
+        // 更新以下URL为您的后端处理流程图的API地址
+        var url = prefix + "/processDiagram/" + taskid;
+
+        fetch(url)
+            .then(response => response.blob()) // 将响应数据转换为Blob对象
+            .then(blob => {
+                var imageUrl = URL.createObjectURL(blob); // 从Blob对象创建一个临时URL
+                document.getElementById('processDiagramImage').src = imageUrl; // 将图片的src设置为该URL
+            })
+            .catch(error => {
+                console.error('Error loading the process diagram:', error);
+            });
+    }
 
     function submitHandler() {
         var taskid = $("#taskid").val();
