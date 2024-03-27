@@ -2,14 +2,14 @@ package com.activiti.system.mapper;
 
 import java.util.List;
 import com.activiti.system.domain.SysUserOnline;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * 在线用户 数据层
  * 
  *
  */
-public interface SysUserOnlineMapper
-{
+public interface SysUserOnlineMapper extends BaseMapper<SysUserOnline> {
     /**
      * 通过会话序号查询信息
      * 

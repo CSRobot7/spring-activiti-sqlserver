@@ -7,23 +7,34 @@ import com.activiti.common.core.domain.entity.SysUser;
 import com.activiti.common.core.page.TableDataInfo;
 import com.activiti.common.utils.StringUtils;
 import com.activiti.system.domain.TaskInfo;
+import com.activiti.web.util.ActivitiTracingChart;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +59,15 @@ public class TaskController extends BaseController {
 
     @Resource
     private HistoryService historyService;
+
+    @Resource
+    private ActivitiTracingChart activitiTracingChart;
+
+    @Resource
+    private RepositoryService repositoryService;
+
+    @Resource
+    private ProcessEngine processEngine;
 
     private String prefix = "activiti/task";
     private Task a;
@@ -226,4 +246,53 @@ public class TaskController extends BaseController {
         });
         return infos;
     }
+
+    @GetMapping(value = "/processDiagram")
+    public void genProcessDiagram(HttpServletResponse httpServletResponse, @RequestParam String taskid) throws IOException {
+        final Task task = taskService.createTaskQuery().taskId(taskid).singleResult();
+        if (Objects.isNull(task)) {
+            return;
+        }
+        String processInstanceId = task.getProcessInstanceId();
+
+        List<Execution> executions = runtimeService.createExecutionQuery()
+            .processInstanceId(processInstanceId)
+            .list();
+
+        List<String> highLightedActivities = new ArrayList<>();
+        List<String> highLightedFlows = new ArrayList<>();
+        for (Execution exe : executions) {
+            List<String> ids = runtimeService.getActiveActivityIds(exe.getId());
+            highLightedActivities.addAll(ids);
+        }
+
+        //获取流程图
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        ProcessEngineConfiguration engconf = processEngine.getProcessEngineConfiguration();
+        ProcessDiagramGenerator diagramGenerator = engconf.getProcessDiagramGenerator();
+        InputStream in = diagramGenerator.generateDiagram(bpmnModel,
+            "png",
+            highLightedActivities,
+            highLightedFlows,
+            "宋体", "微软雅黑", "黑体", null, 2.0);
+
+        OutputStream out = null;
+        byte[] buf = new byte[1024];
+        int legth = 0;
+        try {
+            out = httpServletResponse.getOutputStream();
+            while ((legth = in.read(buf)) != -1) {
+                out.write(buf, 0, legth);
+            }
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+        }
+    }
+
 }

@@ -460,9 +460,9 @@ GO
 
 INSERT INTO sys_user (user_id, dept_id, login_name, user_name, user_type, email, phonenumber, sex, avatar, password, salt, status, del_flag, login_ip, login_date, pwd_update_date, create_by, create_time, update_by, update_time, remark)
 VALUES
-(1, 103, 'admin', N'流程', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2024-03-20 23:48:17', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', null, '2024-03-20 23:48:16', N'管理员'),
-(2, 105, 'ry', N'流程曼', '00', 'ry@qq.com', '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '127.0.0.1', '2022-06-17 15:40:09', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', 'admin', '2022-06-17 15:40:08', N'测试员'),
-(3, 103, 'kobe', N'科比', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2024-03-20 23:14:25', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', null, '2024-03-20 23:14:25', N'管理员');
+(1, 103, 'admin', N'流程', '00', 'test@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2024-03-20 23:48:17', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', null, '2024-03-20 23:48:16', N'管理员'),
+(2, 105, 'ac', N'流程曼', '00', 'test@qq.com', '15666666666', '1', '', '84f1a6eddf7d8dd6a6164f3fe581a83f', '222222', '0', '0', '127.0.0.1', '2022-06-17 15:40:09', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', 'admin', '2022-06-17 15:40:08', N'测试员'),
+(3, 103, 'kobe', N'科比', '00', 'test@163.com', '15888888888', '1', '', '18f29f17b98fc15ee24b4575101c5085', '111111', '0', '0', '127.0.0.1', '2024-03-20 23:14:25', '2022-05-26 15:25:37', 'admin', '2022-05-26 15:25:37', null, '2024-03-20 23:14:25', N'管理员');
 GO
 
 -- 关闭手动插入IDENTITY列的值
@@ -473,7 +473,7 @@ IF OBJECT_ID('sys_user_online', 'U') IS NOT NULL
 DROP TABLE sys_user_online;
 
 CREATE TABLE sys_user_online (
-     sessionId nvarchar(50) NOT NULL DEFAULT '' ,
+     session_id nvarchar(50) NOT NULL DEFAULT '' ,
      login_name nvarchar(50) DEFAULT '',
      dept_name nvarchar(50) DEFAULT '',
      ipaddr nvarchar(128) DEFAULT '',

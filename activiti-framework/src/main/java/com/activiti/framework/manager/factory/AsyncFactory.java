@@ -52,7 +52,7 @@ public class AsyncFactory
                 online.setBrowser(session.getBrowser());
                 online.setOs(session.getOs());
                 online.setStatus(session.getStatus());
-                SpringUtils.getBean(ISysUserOnlineService.class).saveOnline(online);
+//                SpringUtils.getBean(ISysUserOnlineService.class).saveOnline(online);
 
             }
         };

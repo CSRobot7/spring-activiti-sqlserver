@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.activiti.system.mapper.SysUserOnlineMapper">
 
 	<resultMap type="SysUserOnline" id="SysUserOnlineResult">
-		<id     property="sessionId"         column="sessionId"         />
+		<id     property="sessionId"         column="session_id"         />
 		<result property="loginName"         column="login_name"        />
 		<result property="deptName"          column="dept_name"         />
 		<result property="ipaddr"            column="ipaddr"            />
@@ -19,22 +19,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectOnlineVo">
-       select sessionId, login_name, dept_name, ipaddr, login_location, browser, os, status, start_timestamp, last_access_time, expire_time 
+       select session_id, login_name, dept_name, ipaddr, login_location, browser, os, status, start_timestamp, last_access_time, expire_time
 	   from sys_user_online
     </sql>
     
 	<select id="selectOnlineById" parameterType="String" resultMap="SysUserOnlineResult">
 		<include refid="selectOnlineVo"/>
-		where sessionId = #{sessionId}
+		where session_id = #{sessionId}
 	</select>
 
 	<insert id="saveOnline" parameterType="SysUserOnline">
-		replace into sys_user_online(sessionId, login_name, dept_name, ipaddr, login_location, browser, os, status, start_timestamp, last_access_time, expire_time)
-        values (#{sessionId}, #{loginName}, #{deptName}, #{ipaddr}, #{loginLocation}, #{browser}, #{os}, #{status}, #{startTimestamp}, #{lastAccessTime}, #{expireTime})
+		MERGE INTO sys_user_online AS target
+			USING (SELECT #{session_id} AS session_id, #{loginName} AS loginName) AS source
+			ON target.session_id = source.session_id
+			WHEN MATCHED THEN
+				UPDATE SET
+					target.login_name = source.loginName,
+					target.dept_name = #{deptName},
+					target.ipaddr = #{ipaddr},
+					target.login_location = #{loginLocation},
+					target.browser = #{browser},
+					target.os = #{os},
+					target.status = #{status},
+					target.start_timestamp = #{startTimestamp},
+					target.last_access_time = #{lastAccessTime},
+					target.expire_time = #{expireTime}
+			WHEN NOT MATCHED THEN
+				INSERT (session_id, login_name, dept_name, ipaddr, login_location, browser, os, status, start_timestamp, last_access_time, expire_time)
+					VALUES (#{sessionId}, #{loginName}, #{deptName}, #{ipaddr}, #{loginLocation}, #{browser}, #{os}, #{status}, #{startTimestamp}, #{lastAccessTime}, #{expireTime});
+
+
+-- 		merge into sys_user_online(sessionId, login_name, dept_name, ipaddr, login_location, browser, os, status, start_timestamp, last_access_time, expire_time)
+--         values (#{sessionId}, #{loginName}, #{deptName}, #{ipaddr}, #{loginLocation}, #{browser}, #{os}, #{status}, #{startTimestamp}, #{lastAccessTime}, #{expireTime})
 	</insert>
 	
  	<delete id="deleteOnlineById" parameterType="String">
- 		delete from sys_user_online where sessionId = #{sessionId}
+ 		delete from sys_user_online where session_id = #{sessionId}
  	</delete>
  	
  	<select id="selectUserOnlineList" parameterType="SysUserOnline" resultMap="SysUserOnlineResult">

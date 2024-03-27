@@ -1,6 +1,8 @@
 package com.activiti.system.domain;
 
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.activiti.common.core.domain.BaseEntity;
@@ -11,6 +13,7 @@ import com.activiti.common.enums.OnlineStatus;
  * 
  * 
  */
+@TableName("sys_user_online")
 public class SysUserOnline extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

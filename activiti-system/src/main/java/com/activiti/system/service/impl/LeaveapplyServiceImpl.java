@@ -1,9 +1,12 @@
 package com.activiti.system.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import com.activiti.common.core.domain.entity.LeaveapplyPo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.activiti.engine.HistoryService;
@@ -12,6 +15,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -66,13 +71,25 @@ public class LeaveapplyServiceImpl implements ILeaveapplyService {
      */
     @Override
     public List<Leaveapply> selectLeaveapplyList(Leaveapply leaveapply) {
-        LambdaQueryWrapper<Leaveapply> queryWrapper = Wrappers.lambdaQuery();
+        LambdaQueryWrapper<LeaveapplyPo> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper
-            .eq(StringUtils.isNotEmpty(leaveapply.getUserId()), Leaveapply::getUserId, leaveapply.getUserId())
-            .eq(StringUtils.isNotEmpty(leaveapply.getLeaveType()), Leaveapply::getLeaveType, leaveapply.getLeaveType())
-            .ge(MapUtils.isNotEmpty(leaveapply.getParams()) && Objects.nonNull(leaveapply.getParams().get("beginApplyTime")), Leaveapply::getApplyTime, leaveapply.getParams().get("beginApplyTime"))
-            .le(MapUtils.isNotEmpty(leaveapply.getParams()) && Objects.nonNull(leaveapply.getParams().get("endApplyTime")), Leaveapply::getApplyTime, leaveapply.getParams().get("endApplyTime"));
-        return leaveapplyMapper.selectList(queryWrapper);
+            .eq(StringUtils.isNotEmpty(leaveapply.getUserId()), LeaveapplyPo::getUserId, leaveapply.getUserId())
+            .eq(StringUtils.isNotEmpty(leaveapply.getLeaveType()), LeaveapplyPo::getLeaveType, leaveapply.getLeaveType())
+            .ge(MapUtils.isNotEmpty(leaveapply.getParams()) && StringUtils.isNotBlank(String.valueOf(leaveapply.getParams().get("beginApplyTime"))), LeaveapplyPo::getApplyTime, leaveapply.getParams().get("beginApplyTime"))
+            .le(MapUtils.isNotEmpty(leaveapply.getParams()) && StringUtils.isNotBlank(String.valueOf(leaveapply.getParams().get("endApplyTime"))), LeaveapplyPo::getApplyTime, leaveapply.getParams().get("endApplyTime"));
+        return leaveapplyMapper.selectList(queryWrapper).stream().map(this::convert).collect(Collectors.toList());
+    }
+
+    private Leaveapply convert(LeaveapplyPo po) {
+        Leaveapply leaveapply = new Leaveapply();
+      try {
+        BeanUtils.copyProperties(leaveapply, po);
+      } catch (IllegalAccessException e) {
+        throw new RuntimeException(e);
+      } catch (InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+      return leaveapply;
     }
 
     /**
@@ -92,8 +109,8 @@ public class LeaveapplyServiceImpl implements ILeaveapplyService {
 //        variables.put("deptleader", leaveapply.getDeptleader());
         runtimeService.startProcessInstanceByKey(leaveapply.getModelKey(), String.valueOf(leaveapply.getId()), variables);
         // 自动完成第一个任务
-/*        Task autoTask = taskService.createTaskQuery().processDefinitionKey("leave").processInstanceBusinessKey(String.valueOf(leaveapply.getId())).singleResult();
-        taskService.complete(autoTask.getId());*/
+        Task autoTask = taskService.createTaskQuery().processDefinitionKey(leaveapply.getModelKey()).processInstanceBusinessKey(String.valueOf(leaveapply.getId())).singleResult();
+        taskService.complete(autoTask.getId());
         return rows;
     }
 

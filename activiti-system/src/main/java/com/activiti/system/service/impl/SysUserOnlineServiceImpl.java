@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +85,16 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
      * @param online 会话信息
      */
     @Override
-    public void saveOnline(SysUserOnline online)
-    {
-        userOnlineDao.saveOnline(online);
+    public void saveOnline(SysUserOnline online) {
+        LambdaQueryWrapper<SysUserOnline> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(SysUserOnline::getSessionId, online.getSessionId());
+        final Long l = userOnlineDao.selectCount(wrapper);
+        if (l == 0) {
+            userOnlineDao.insert(online);
+        } else {
+            userOnlineDao.updateById(online);
+        }
+//        userOnlineDao.saveOnline(online);
     }
 
     /**

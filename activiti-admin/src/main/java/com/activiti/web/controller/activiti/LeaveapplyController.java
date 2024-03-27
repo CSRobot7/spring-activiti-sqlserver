@@ -224,7 +224,7 @@ public class LeaveapplyController extends BaseController {
         ProcessDefinitionQuery queryCondition = repositoryService.createProcessDefinitionQuery();
         queryCondition.latestVersion();
         queryCondition.active();
-        List<ProcessDefinition> pageList = queryCondition.orderByDeploymentId().active().processDefinitionKeyLike("leave").desc().list();
+        List<ProcessDefinition> pageList = queryCondition.orderByDeploymentId().active().processDefinitionKeyLike("leave%").desc().list();
         List<Process> pdList = new ArrayList<Process>();
         for (int i = 0; i < pageList.size(); i++) {
             Process p = new Process();

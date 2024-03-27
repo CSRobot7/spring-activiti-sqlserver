@@ -80,4 +80,8 @@ public class SysPasswordService
     {
         return new Md5Hash(loginName + password + salt).toHex();
     }
+
+    public static void main(String[] args) {
+        System.out.println(new Md5Hash("kobe" + "111111" + "111111").toHex());
+    }
 }

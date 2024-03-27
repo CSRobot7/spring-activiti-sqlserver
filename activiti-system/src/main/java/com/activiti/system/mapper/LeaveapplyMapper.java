@@ -1,6 +1,8 @@
 package com.activiti.system.mapper;
 
 import java.util.List;
+
+import com.activiti.common.core.domain.entity.LeaveapplyPo;
 import com.activiti.system.domain.Leaveapply;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -10,7 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author shenzhanwang
  * @date 2022-04-02
  */
-public interface LeaveapplyMapper extends BaseMapper<Leaveapply> {
+public interface LeaveapplyMapper extends BaseMapper<LeaveapplyPo> {
     /**
      * 查询请假
      * 
