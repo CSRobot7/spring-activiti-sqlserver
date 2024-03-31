@@ -1,6 +1,7 @@
 package com.activiti.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -262,14 +263,17 @@ public class SysUserServiceImpl implements ISysUserService {
         identityService.saveUser(actUser);
 
         //新增act_id_membership
-        List<Long> roleIds = Optional.ofNullable(user.getRoles())
-            .orElse(new ArrayList<>()).stream()
-            .map(SysRole::getRoleId)
-            .collect(Collectors.toList());
+        List<Long> roleIds = Arrays.asList(user.getRoleIds());
         if (CollectionUtils.isEmpty(roleIds)) {
             return;
         }
-        Map<Long, SysRole> roleMap = user.getRoles().stream().collect(Collectors.toMap(SysRole::getRoleId, Function.identity()));
+        LambdaQueryWrapper<SysRole> roleQuery = Wrappers.lambdaQuery();
+        roleQuery.in(SysRole::getRoleId, roleIds);
+        final List<SysRole> sysRoles = roleMapper.selectList(roleQuery);
+
+        Map<Long, SysRole> roleMap = Optional.ofNullable(sysRoles).orElse(new ArrayList<>())
+            .stream()
+            .collect(Collectors.toMap(SysRole::getRoleId, Function.identity()));
 
         roleIds.forEach(aLong -> {
             Group group = identityService.createGroupQuery().groupId(String.valueOf(aLong)).singleResult();

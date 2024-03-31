@@ -1,6 +1,8 @@
 package com.activiti.system.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import com.activiti.system.domain.SysUserRole;
 

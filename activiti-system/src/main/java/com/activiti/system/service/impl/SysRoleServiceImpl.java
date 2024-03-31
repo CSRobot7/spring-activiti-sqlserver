@@ -231,6 +231,17 @@ public class SysRoleServiceImpl implements ISysRoleService
         roleMapper.updateRole(role);
         // 删除角色与菜单关联
         roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
+        Group group = identityService.createGroupQuery().groupId(String.valueOf(role.getRoleId())).singleResult();
+        if (group != null) {
+            // 获取该组下所有用户的关联信息
+            List<User> users = identityService.createUserQuery().memberOfGroup(group.getId()).list();
+
+            // 循环遍历并删除用户与组的关联
+            for (User user : users) {
+                identityService.deleteMembership(user.getId(), group.getId());
+            }
+        }
+
         return insertRoleMenu(role);
     }
 

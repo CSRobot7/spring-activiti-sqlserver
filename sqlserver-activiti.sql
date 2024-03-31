@@ -484,7 +484,7 @@ CREATE TABLE sys_user_online (
      start_timestamp datetime2 DEFAULT NULL,
      last_access_time datetime2 DEFAULT NULL,
      expire_time int DEFAULT '0',
-     PRIMARY KEY (sessionId)
+     PRIMARY KEY (session_id)
 );
 
 INSERT INTO sys_user_online

@@ -6,9 +6,9 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:sqlserver://localhost:1433;DatabaseName=sqlserver-spring-activiti
+                url: jdbc:sqlserver://47.101.191.160:1433;DatabaseName=WFActiviti
                 username: sa
-                password: root
+                password: Cqbgn123&*
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

@@ -2,6 +2,7 @@ package com.activiti.common.core.domain.entity;
 
 import javax.validation.constraints.*;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -47,12 +48,15 @@ public class SysRole extends BaseEntity
     private String delFlag;
 
     /** 用户是否存在此角色标识 默认不存在 */
+    @TableField(exist = false)
     private boolean flag = false;
 
     /** 菜单组 */
+    @TableField(exist = false)
     private Long[] menuIds;
 
     /** 部门组（数据权限） */
+    @TableField(exist = false)
     private Long[] deptIds;
 
     public SysRole()

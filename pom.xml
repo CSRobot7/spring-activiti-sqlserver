@@ -5,7 +5,7 @@
 
     <groupId>com.activiti</groupId>
     <artifactId>spring-activiti</artifactId>
-    <version>4.7.3</version>
+    <version>0.0.1</version>
 
     <description>管理系统</description>
     
