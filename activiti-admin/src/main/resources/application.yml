@@ -16,7 +16,7 @@ project:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为80
-  port: 80
+  port: 8089
   servlet:
     # 应用的访问路径
     context-path: /
@@ -50,6 +50,11 @@ spring:
     check-process-definitions: true
     process-definition-location-prefix: classpath:/processes/
     history-level: full
+    # 检测身份信息表是否存在，如果开启会每10秒查询ACT_RU_TIMER_JOB 表
+    db-identity-used: false
+    #在流程引擎启动就激活AsyncExecutor
+    async-executor-activate: false
+
   # 模板引擎
   thymeleaf:
     mode: HTML
