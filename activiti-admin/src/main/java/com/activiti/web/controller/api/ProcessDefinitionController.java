@@ -25,7 +25,7 @@ public class ProcessDefinitionController {
 
   @GetMapping("/query/list")
   @ResponseBody
-  public List<Process> queryPrcessDefinitionList(@RequestParam String pdCategory) {
+  public List<Process> queryPrcessDefinitionList(@RequestParam(required = false) String pdCategory) {
     ProcessDefinitionQuery queryCondition = repositoryService.createProcessDefinitionQuery();
     queryCondition.latestVersion();
     queryCondition.active();
