@@ -1,6 +1,8 @@
 package com.activiti.system.domain;
 
-public class Process {
+import java.io.Serializable;
+
+public class Process implements Serializable {
 	String id;
 
 	String deploymentId;
